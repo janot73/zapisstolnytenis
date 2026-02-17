@@ -888,6 +888,14 @@ class TeamSheet {
             matchData.push(rowData);
         });
 
+        // Get statistics with correct IDs
+        const matchesHome = document.getElementById('stat-matches-home').textContent;
+        const matchesGuest = document.getElementById('stat-matches-guest').textContent;
+        const setsHome = document.getElementById('stat-sets-home').textContent;
+        const setsGuest = document.getElementById('stat-sets-guest').textContent;
+        const ballsHome = document.getElementById('stat-balls-home').textContent;
+        const ballsGuest = document.getElementById('stat-balls-guest').textContent;
+
         const archiveItem = {
             id: Date.now(),
             date: date,
@@ -900,16 +908,16 @@ class TeamSheet {
             players: JSON.parse(JSON.stringify(this.players)), // deep copy
             matches: matchData,
             statistics: {
-                matches: document.getElementById('stats-matches-ratio').textContent,
-                sets: document.getElementById('stats-sets-ratio').textContent,
-                balls: document.getElementById('stats-balls-ratio').textContent,
+                matches: `${matchesHome}:${matchesGuest}`,
+                sets: `${setsHome}:${setsGuest}`,
+                balls: `${ballsHome}:${ballsGuest}`,
                 details: {
-                    matchesHome: document.getElementById('stats-matches-home').textContent,
-                    matchesGuest: document.getElementById('stats-matches-guest').textContent,
-                    setsHome: document.getElementById('stats-sets-home').textContent,
-                    setsGuest: document.getElementById('stats-sets-guest').textContent,
-                    ballsHome: document.getElementById('stats-balls-home').textContent,
-                    ballsGuest: document.getElementById('stats-balls-guest').textContent
+                    matchesHome: matchesHome,
+                    matchesGuest: matchesGuest,
+                    setsHome: setsHome,
+                    setsGuest: setsGuest,
+                    ballsHome: ballsHome,
+                    ballsGuest: ballsGuest
                 }
             }
         };
