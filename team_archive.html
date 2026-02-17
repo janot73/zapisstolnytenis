@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archív Zápasov - Stolný Tenis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .archive-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .archive-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .archive-item {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .archive-item:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .archive-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .archive-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .archive-date {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .archive-teams {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .archive-score {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--score-color);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .btn-expand {
+            background: none;
+            border: none;
+            color: var(--secondary-text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .archive-item.expanded .btn-expand {
+            transform: rotate(180deg);
+        }
+
+        .archive-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .archive-item.expanded .archive-details {
+            max-height: 2000px;
+            /* arbitrary large value */
+        }
+
+        .details-content {
+            padding: 1.5rem;
+        }
+
+        .match-row-static {
+            display: grid;
+            grid-template-columns: 30px 1fr 1fr 100px 60px 80px;
+            gap: 10px;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 800px) {
+            .match-row-static {
+                grid-template-columns: 30px 1fr 60px 80px;
+                /* Collapse layout if needed or keep scroll */
+            }
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .stat-item h4 {
+            color: var(--secondary-text);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-archive {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary-text);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container archive-container">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>📁 ARCHÍV</h1>
+            <a href="team_sheet.html" class="btn-secondary" style="text-decoration: none;">← NOVÝ ZÁPIS</a>
+        </header>
+
+        <div id="archive-list" class="archive-list">
+            <!-- Items injected by JS -->
+            <div class="empty-archive">Načítavam...</div>
+        </div>
+    </div>
+    <script src="team_archive.js"></script>
+</body>
+
+</html>

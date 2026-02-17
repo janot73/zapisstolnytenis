@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stolný Tenis - Scoreboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>🏓 STOLNÝ TENIS</h1>
+            <div class="match-info">
+                <select id="match-length" onchange="game.setMatchLength(this.value)">
+                    <option value="7">Na štyri víťazné sety zo 7</option>
+                    <option value="5" selected>Na tri víťazné sety z 5</option>
+                </select>
+            </div>
+        </header>
+
+        <main class="scoreboard">
+            <!-- Player 1 -->
+            <div class="player-card" id="player1">
+                <div class="player-header">
+                    <input type="text" class="player-name" value="Hráč 1" placeholder="Meno hráča">
+                    <input type="text" class="player-club" value="Klub A" placeholder="Klub">
+                </div>
+                <div class="score-display">
+                    <div class="service-indicator hidden" id="service-p1"></div>
+                    <span class="score" id="score-p1">0</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-score btn-minus" onclick="game.updateScore(0, -1)">-</button>
+                    <button class="btn-score btn-plus" onclick="game.updateScore(0, 1)">+</button>
+                </div>
+                <div class="sets-won">
+                    SETS: <span id="sets-p1">0</span>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span class="vs">VS</span>
+                <button class="btn-reset-set" onclick="game.resetCurrentSet()">RESET SET</button>
+                <button class="btn-primary hidden pulse" id="btn-close-set" onclick="game.confirmSetEnd()">UZAVRIEŤ
+                    SET</button>
+            </div>
+
+            <!-- Player 2 -->
+            <div class="player-card" id="player2">
+                <div class="player-header">
+                    <input type="text" class="player-name" value="Hráč 2" placeholder="Meno hráča">
+                    <input type="text" class="player-club" value="Klub B" placeholder="Klub">
+                </div>
+                <div class="score-display">
+                    <div class="service-indicator hidden" id="service-p2"></div>
+                    <span class="score" id="score-p2">0</span>
+                </div>
+                <div class="controls">
+                    <button class="btn-score btn-minus" onclick="game.updateScore(1, -1)">-</button>
+                    <button class="btn-score btn-plus" onclick="game.updateScore(1, 1)">+</button>
+                </div>
+                <div class="sets-won">
+                    SETS: <span id="sets-p2">0</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Set History -->
+        <section class="history-section">
+            <h2>MATCH HISTORY</h2>
+            <div class="history-grid">
+                <div class="history-header"></div> <!-- Empty corner -->
+                <div class="history-header">SET 1</div>
+                <div class="history-header">SET 2</div>
+                <div class="history-header">SET 3</div>
+                <div class="history-header">SET 4</div>
+                <div class="history-header">SET 5</div>
+                <div class="history-header">SET 6</div>
+                <div class="history-header">SET 7</div>
+
+                <div class="history-row-label" id="label-p1">Hráč 1</div>
+                <div class="history-cell" id="h-p1-s1">-</div>
+                <div class="history-cell" id="h-p1-s2">-</div>
+                <div class="history-cell" id="h-p1-s3">-</div>
+                <div class="history-cell" id="h-p1-s4">-</div>
+                <div class="history-cell" id="h-p1-s5">-</div>
+                <div class="history-cell" id="h-p1-s6">-</div>
+                <div class="history-cell" id="h-p1-s7">-</div>
+
+                <div class="history-row-label" id="label-p2">Hráč 2</div>
+                <div class="history-cell" id="h-p2-s1">-</div>
+                <div class="history-cell" id="h-p2-s2">-</div>
+                <div class="history-cell" id="h-p2-s3">-</div>
+                <div class="history-cell" id="h-p2-s4">-</div>
+                <div class="history-cell" id="h-p2-s5">-</div>
+                <div class="history-cell" id="h-p2-s6">-</div>
+                <div class="history-cell" id="h-p2-s7">-</div>
+            </div>
+        </section>
+
+        <footer class="main-controls">
+            <button class="btn-danger" onclick="game.resetMatch()">NOVÝ ZÁPAS</button>
+            <button class="btn-secondary" onclick="game.toggleServer()">ZMENIŤ PODANIE</button>
+            <button class="btn-primary hidden" id="btn-save-match" onclick="game.saveMatch()">ULOŽIŤ DO ARCHÍVU</button>
+            <a href="archive.html" class="btn-secondary"
+                style="text-decoration: none; display: inline-flex; align-items: center;">ARCHÍV</a>
+            <a href="team_sheet.html" class="btn-primary"
+                style="text-decoration: none; display: inline-flex; align-items: center;">ZÁPIS DRUŽSTIEV</a>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

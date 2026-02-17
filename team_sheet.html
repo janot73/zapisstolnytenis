@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zápis o stretnutí - Stolný Tenis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific overrides or additions for the sheet */
+        .sheet-container {
+            max-width: 1400px;
+            /* Wider for the table */
+        }
+
+        .sheet-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .team-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-box h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-label {
+            font-weight: bold;
+            width: 30px;
+            color: var(--score-color);
+        }
+
+        .input-text {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.5rem;
+            border-radius: 4px;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .input-text:focus {
+            border-color: var(--accent-p2);
+            outline: none;
+        }
+
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .match-table th,
+        .match-table td {
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .match-table th {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--secondary-text);
+            font-weight: 600;
+        }
+
+        .match-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .input-score {
+            width: 60px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.3rem;
+            border-radius: 4px;
+        }
+
+        .total-score {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--score-color);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .config-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .player-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 0.3rem;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .sheet-header {
+                grid-template-columns: 1fr;
+            }
+
+            .match-table {
+                font-size: 0.8rem;
+            }
+
+            .match-table th,
+            .match-table td {
+                padding: 0.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container sheet-container">
+        <header>
+            <h1>🏓 ZÁPIS O STRETNUTÍ</h1>
+            <div class="match-info">
+                <input type="date" id="match-date" class="input-text" style="width: auto;" onchange="sheet.saveState()">
+                <input type="text" id="match-venue" class="input-text" placeholder="Miesto konania"
+                    style="width: 200px;" oninput="sheet.saveState()">
+            </div>
+        </header>
+
+        <section class="config-section">
+            <div>
+                <label for="match-variant">Variant:</label>
+                <select id="match-variant" class="input-text" style="width: auto;" onchange="sheet.updateVariant()">
+                    <option value="4rounds">4 kolá dvojhier (18 zápasov max)</option>
+                    <option value="3rounds">3 kolá dvojhier (14 zápasov max)</option>
+                </select>
+            </div>
+            <div>
+                <label for="doubles-count">Počet štvorhier:</label>
+                <select id="doubles-count" class="input-text" style="width: auto;" onchange="sheet.updateVariant()">
+                    <option value="1">1 štvorhra</option>
+                    <option value="2" selected>2 štvorhry</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Stats Table (Top) -->
+        <div class="glass-panel" style="margin-bottom: 2rem; text-align: center;">
+            <div class="total-score" style="margin-bottom: 1rem;">
+                <span id="score-home">0</span> : <span id="score-guest">0</span>
+            </div>
+            <table class="stats-table" style="margin: 0 auto;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Zápasy</th>
+                        <th>Sety</th>
+                        <th>Loptičky</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Domáci</td>
+                        <td id="stat-matches-home" style="font-weight:bold; color: var(--primary-color);">0</td>
+                        <td id="stat-sets-home">0</td>
+                        <td id="stat-balls-home">0</td>
+                    </tr>
+                    <tr>
+                        <td>Hostia</td>
+                        <td id="stat-matches-guest" style="font-weight:bold; color: var(--secondary-color);">0</td>
+                        <td id="stat-sets-guest">0</td>
+                        <td id="stat-balls-guest">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="sheet-header">
+            <!-- Home Team -->
+            <div class="team-box" id="team-home">
+                <h3>Domáce družstvo</h3>
+                <input type="text" class="input-text" id="team-name-home" placeholder="Názov klubu"
+                    style="font-weight: bold; font-size: 1.2rem; margin-bottom: 1rem;" oninput="sheet.saveState()">
+
+                <div class="player-row">
+                    <span class="player-label">A</span>
+                    <input type="text" class="input-text" id="player-A" placeholder="Meno hráča A"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-A" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">B</span>
+                    <input type="text" class="input-text" id="player-B" placeholder="Meno hráča B"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-B" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">C</span>
+                    <input type="text" class="input-text" id="player-C" placeholder="Meno hráča C"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-C" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">D</span>
+                    <input type="text" class="input-text" id="player-D" placeholder="Meno hráča D"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-D" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <!-- Substitutes -->
+                <div id="substitutes-home"
+                    style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;"></div>
+                <!-- End Player Rows -->
+            </div>
+
+            <!-- Guest Team -->
+            <div class="team-box" id="team-guest">
+                <h3>Hosťujúce družstvo</h3>
+                <input type="text" class="input-text" id="team-name-guest" placeholder="Názov klubu"
+                    style="font-weight: bold; font-size: 1.2rem; margin-bottom: 1rem;" oninput="sheet.saveState()">
+
+                <div class="player-row">
+                    <span class="player-label">X</span>
+                    <input type="text" class="input-text" id="player-X" placeholder="Meno hráča X"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-X" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">Y</span>
+                    <input type="text" class="input-text" id="player-Y" placeholder="Meno hráča Y"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-Y" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">Z</span>
+                    <input type="text" class="input-text" id="player-Z" placeholder="Meno hráča Z"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-Z" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <div class="player-row">
+                    <span class="player-label">U</span>
+                    <input type="text" class="input-text" id="player-U" placeholder="Meno hráča U"
+                        oninput="sheet.updateNames()">
+                    <span id="stats-player-U" class="player-stats" style="font-weight:bold; margin-left:5px;">0/0</span>
+                </div>
+                <!-- Substitutes -->
+                <div id="substitutes-guest"
+                    style="margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;"></div>
+            </div>
+        </div>
+
+        <table class="match-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">#</th>
+                    <th style="width: 25%;">Domáci</th>
+                    <th style="width: 25%;">Hostia</th>
+                    <th colspan="5">Sety (1-5)</th>
+                    <th style="width: 60px;">Sety</th>
+                    <th style="width: 80px;">Stav</th>
+                </tr>
+            </thead>
+            <tbody id="matches-body">
+                <!-- Javascript will populate this -->
+            </tbody>
+        </table>
+
+
+
+
+        </main>
+
+        <footer class="main-controls">
+            <a href="index.html" class="btn-secondary"
+                style="text-decoration: none; display: inline-flex; align-items: center;">UKAZOVATEĽ STAVU</a>
+            <button class="btn-secondary" onclick="window.location.href='team_archive.html'">ARCHÍV</button>
+            <button class="btn-primary" onclick="window.print()">TLAČIŤ / PDF</button>
+            <button class="btn-success" onclick="sheet.saveMatch()">ULOŽIŤ</button>
+            <button class="btn-danger" onclick="sheet.resetSheet()">NOVÝ ZÁPIS</button>
+        </footer>
+    </div>
+    <script src="team_sheet.js"></script>
+</body>
+
+</html>
